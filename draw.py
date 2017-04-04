@@ -41,20 +41,26 @@ def add_box( points, x, y, z, width, height, depth ):
     add_polygon(points, x1, y, z, x, y1, z, x1, y1, z)
 
     #back (???)
-    add_polygon(points, x1, y, z1, x, y, z1, x, y1, z1)
-    add_polygon(points, x1, y, z1, x, y1, z1, x1, y1, z1)
+    add_polygon(points, x1, y, z1, x, y1, z1, x, y, z1)
+    add_polygon(points, x1, y, z1, x1, y1, z1, x, y1, z1)
 
-    #front
-    #add_edge(points, x, y, z, x+2, y+2, z+2) #topright
-    #add_edge(points, x, y1, z, x+2, y1+2, z+2) #bottomright
-    #add_edge(points, x1, y, z, x1+2, y+2, z+2) #topleft
-    #add_edge(points, x1, y1, z, x1+2, y1+2, z+2) #bottomleft
+    #side left
+    add_polygon(points, x, y, z, x, y, z1, x, y1, z1)
+    add_polygon(points, x, y, z, x, y1, z1, x, y1, z)
 
-    #back
-    #add_edge(points, x, y, z1, x+2, y+2, z1+2)
-    #add_edge(points, x, y1, z1, x+2, y1+2, z1+2)
-    #add_edge(points, x1, y, z1, x1+2, y+2, z1+2)
-    #add_edge(points, x1, y1, z1, x1+2, y1+2, z1+2)
+    #side right
+    add_polygon(points, x1, y, z1, x1, y, z, x1, y1, z1)
+    add_polygon(points, x1, y, z, x1, y1, z, x1, y1, z1)
+
+    #top
+    add_polygon(points, x1, y, z1, x, y, z1, x, y, z)
+    add_polygon(points, x, y, z, x1, y, z1, x1, y, z)
+
+    #bottom
+    add_polygon(points, x1, y1, z1, x1, y1, z, x, y1, z)
+    add_polygon(points, x1, y1, z1, x, y1, z, x, y1, z1)
+
+
 
 def add_sphere( edges, cx, cy, cz, r, step ):
     points = generate_sphere(cx, cy, cz, r, step)
@@ -69,13 +75,20 @@ def add_sphere( edges, cx, cy, cz, r, step ):
     for lat in range(lat_start, lat_stop):
         for longt in range(longt_start, longt_stop+1):
             index = lat * num_steps + longt
-            
-            add_edge(edges, points[index][0],
-                     points[index][1],
-                     points[index][2],
-                     points[index][0]+1,
-                     points[index][1]+1,
-                     points[index][2]+1 )
+            if (longt % (num_steps + 1)):
+                print index
+                
+                #THE 110 is a hacky thing! Only works for this rn! Changes with step???
+                add_polygon(edges,  
+                         points[(index) % 110][0],
+                         points[(index) % 110][1],
+                         points[(index) % 110][2],
+                         points[(index + 11) % 110][0],
+                         points[(index + 11) % 110][1],
+                         points[(index + 11) % 110][2],
+                         points[(index + 12) % 110][0],
+                         points[(index + 12) % 110][1],
+                         points[(index + 12) % 110][2],)
 
 def generate_sphere( cx, cy, cz, r, step ):
     points = []
